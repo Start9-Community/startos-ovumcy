@@ -43,7 +43,7 @@ A sign-in page, then the calendar. Everything each person tracks lives in the ap
 
 Three kinds, all driven by the same prediction: a banner in the app, a push to a webhook, and a private read-only calendar feed you can subscribe to from a phone or desktop calendar.
 
-Webhook reminders go to a notification server you run — ntfy or Gotify, for example. Each person sets their own webhook URL in the app's Settings; nothing is sent until they do. A daily pass checks who is due and sends them; set the hour it runs, and the time zone that hour is in, in **Settings**. To check a webhook works without waiting for tomorrow, run **Send Reminders Now**.
+Webhook reminders go to a notification server you run — ntfy or Gotify, for example. Each person sets their own webhook URL in the app's Settings; nothing is sent until they do. A daily pass checks who is due and sends them; set the hour it runs, and the time zone that hour is in, in **Settings**. Reminders someone has pinned to a particular cycle day — day 15 and day 25 for a medication, say — are checked every hour instead, and go out at the time that person picked for each one. To check a webhook works without waiting for the next pass, run **Send Reminders Now**.
 
 ### Managing accounts
 
@@ -57,4 +57,11 @@ These actions are grouped under **Account**.
 
 ### Backups
 
-A StartOS backup captures the database and the account you signed in with. One thing behaves deliberately differently: any private calendar subscription link that someone revoked stays dead after a restore, and the links that were live are disarmed as a precaution. Each person re-generates theirs from the app's Settings afterwards.
+A StartOS backup captures every account's cycle data and the package settings. Restoring it deliberately does not restore access: Ovumcy signs everyone out, revokes local passwords and recovery codes, clears stored webhook URLs, and disarms calendar subscription links. This prevents access someone revoked after the backup from becoming live again.
+
+After restoring:
+
+1. Start the service and wait for the **Web Interface** health check to pass. Password resets cannot run until this first start completes.
+2. Run **Set Admin Password** for your admin account and **Reset Account Password** for each other account. Old passwords and recovery codes no longer work. Give each person their replacement password privately; Ovumcy asks them to choose their own when they sign in.
+3. Each person re-enters their webhook URL and generates a new calendar subscription link in the app's Settings if they use those features. Their cycle data is still there.
+4. Have each person save a new recovery code from the app's Settings. Resetting a password does not issue one, and without it there is no way back into an account except asking you for another reset.
